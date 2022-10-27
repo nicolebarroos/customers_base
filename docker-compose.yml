@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  customers:
+    build: .
+    environment:
+      - DB_HOST=db
+      - DB_NAME=customer_base_db
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - DEBUG=True
+    depends_on:
+      - db
+    command: >
+      sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/usr/src/app/
+    ports:
+      - 8009:8000
+    env_file:
+      - env_example
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: customer_base_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+#
+#  adminer:
+#    image: adminer
+#    restart: always
+#    ports:
+#      - 8080:8080
